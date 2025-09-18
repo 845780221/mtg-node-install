@@ -23,8 +23,8 @@ read -rp "请输入节点名称（nodeId）: " NODE_ID
 read -rp "请输入主控端接口地址（如 https://your-master/api/secrets）: " API_URL
 read -rp "请输入监听端口 [默认443]: " MTP_PORT
 MTP_PORT=${MTP_PORT:-443}
-read -rp "请输入mtg版本 [默认v1.0.0]: " MTG_VERSION
-MTG_VERSION=${MTG_VERSION:-v1.0.0}
+
+
 
 # 1. 安装依赖
 
@@ -38,12 +38,11 @@ fi
 # 2. 下载 mtg 二进制
 
 if [ ! -f mtg ]; then
-  curl -L -o mtg https://github.com/9seconds/mtg/releases/download/${MTG_VERSION}/mtg-linux-amd64
+  curl -L -o mtg https://github.com/9seconds/mtg/releases/download/v2.1.7/mtg-linux-amd64
   chmod +x mtg
 fi
 
 done
-cat > sync_secrets.sh <<EOF
 # 3. 创建 secrets 同步脚本
 cat > sync_secrets.sh <<EOF
 #!/bin/bash
