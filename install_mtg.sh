@@ -12,14 +12,28 @@ echo "本脚本将自动安装 mtg 并配置密钥自动同步。"
 echo "如遇权限问题请先执行：chmod +x install_mtg.sh"
 echo "如需停止服务，可用 pkill mtg 和 pkill -f sync_secrets.sh"
 
-NODE_ID=${1:-"node-001"}
-API_URL=${2:-"https://your-master/api/secrets"}
-MTP_PORT=${3:-443}
 
-read -rp "请输入节点名称（nodeId）: " NODE_ID
-read -rp "请输入主控端接口地址（如 https://your-master/api/secrets）: " API_URL
-read -rp "请输入监听端口 [默认443]: " MTP_PORT
-MTP_PORT=${MTP_PORT:-443}
+# 参数优先级：命令行参数 > 交互输入 > 默认值
+if [ -n "$1" ]; then
+  NODE_ID="$1"
+else
+  read -rp "请输入节点名称（nodeId）[默认node-001]: " NODE_ID
+  NODE_ID=${NODE_ID:-node-001}
+fi
+
+if [ -n "$2" ]; then
+  API_URL="$2"
+else
+  read -rp "请输入主控端接口地址（如 https://your-master/api/secrets）: " API_URL
+  API_URL=${API_URL:-https://your-master/api/secrets}
+fi
+
+if [ -n "$3" ]; then
+  MTP_PORT="$3"
+else
+  read -rp "请输入监听端口 [默认443]: " MTP_PORT
+  MTP_PORT=${MTP_PORT:-443}
+fi
 
 
 
