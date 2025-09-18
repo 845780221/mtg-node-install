@@ -1,30 +1,15 @@
-
-#!/bin/bash
-# mtg 节点一键安装与自动密钥同步脚本
-# 适用系统：CentOS 7+/Ubuntu/Debian
-# 适用架构：x86_64 (amd64)
-#
-
-# 功能：
-#  - 自动下载并安装 mtg
-#  - 自动定时从主控端API同步密钥并热更新
-#  - 一键后台运行，无需手动干预
-#
-# 用法：
-#   bash install_mtg.sh
-#   按提示输入节点名称、接口地址、端口、mtg版本即可
-#
-# GitHub: https://github.com/你的仓库/mtg-node-install
-# Author: 你的名字 or 团队
 # curl -s https://raw.githubusercontent.com/845780221/mtg-node-install/main/install_mtg.sh | bash
-# curl -s https://raw.githubusercontent.com/845780221/mtg-node-install/main/install_mtg.sh | bash
-#
+# https://pg-api.1186899.com/miniapi/secrets
 
 echo "==============================="
 echo "  mtg 节点一键安装脚本  "
 echo "==============================="
 
+
 set -e
+
+# 固定 adtag
+ADTAG="0b28e29e1ac4d675001d3a50a3ecdede"
 
 echo "本脚本将自动安装 mtg 并配置密钥自动同步。"
 echo "如遇权限问题请先执行：chmod +x install_mtg.sh"
@@ -58,10 +43,11 @@ if [ ! -f mtg ]; then
 fi
 
 # 3. 创建 secrets 同步脚本
+done
 cat > sync_secrets.sh <<EOF
 #!/bin/bash
 while true; do
-  curl -s "${API_URL}?nodeId=${NODE_ID}" | jq -r '.secrets[].secret' > secrets.txt
+  curl -s "${API_URL}?nodeId=${NODE_ID}&adtag=${ADTAG}" | jq -r '.secrets[].secret' > secrets.txt
   pkill -HUP mtg || true
   sleep 60
 done
