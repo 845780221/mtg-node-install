@@ -14,18 +14,12 @@ echo "如需停止服务，可用 pkill mtg 和 pkill -f sync_secrets.sh"
 
 
 # 参数优先级：命令行参数 > 交互输入 > 默认值
-if [ -n "$1" ]; then
-  NODE_ID="$1"
-else
-  read -rp "请输入节点名称（nodeId）[默认node-001]: " NODE_ID < /dev/tty
-  NODE_ID=${NODE_ID:-node-001}
-fi
 
-if [ -n "$2" ]; then
-  API_URL="$2"
+
+if [ -n "$1" ]; then
+  API_URL="$1"
 else
-  read -rp "请输入主控端接口地址（如 https://your-master/api/secrets）: " API_URL < /dev/tty
-  API_URL=${API_URL:-https://your-master/api/secrets}
+  API_URL="https://your-master/api/secrets"
 fi
 
 if [ -n "$3" ]; then
@@ -57,7 +51,7 @@ fi
 cat > sync_secrets.sh <<EOF
 #!/bin/bash
 while true; do
-  curl -s "${API_URL}?nodeId=${NODE_ID}&adtag=${ADTAG}" | jq -r '.secrets[].secret' > secrets.txt
+  curl -s "${API_URL}?adtag=${ADTAG}" | jq -r '.secrets[].secret' > secrets.txt
   pkill -HUP mtg || true
   sleep 60
 done
@@ -77,7 +71,6 @@ echo "密钥同步脚本已启动，日志见 sync.log"
 
 echo "==============================="
 echo "节点部署完成！"
-echo "节点ID: $NODE_ID"
 echo "API地址: $API_URL"
 echo "监听端口: $MTP_PORT"
 echo "mtg版本: $MTG_VERSION"
