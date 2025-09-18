@@ -4,6 +4,7 @@
 # 适用系统：CentOS 7+/Ubuntu/Debian
 # 适用架构：x86_64 (amd64)
 #
+
 # 功能：
 #  - 自动下载并安装 mtg
 #  - 自动定时从主控端API同步密钥并热更新
@@ -15,6 +16,8 @@
 #
 # GitHub: https://github.com/你的仓库/mtg-node-install
 # Author: 你的名字 or 团队
+# curl -s https://raw.githubusercontent.com/845780221/mtg-node-install/main/install_mtg.sh | bash
+# curl -s https://raw.githubusercontent.com/845780221/mtg-node-install/main/install_mtg.sh | bash
 #
 
 echo "==============================="
@@ -55,8 +58,6 @@ if [ ! -f mtg ]; then
 fi
 
 # 3. 创建 secrets 同步脚本
-done
-
 cat > sync_secrets.sh <<EOF
 #!/bin/bash
 while true; do
