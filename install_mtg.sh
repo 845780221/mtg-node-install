@@ -17,21 +17,21 @@ echo "如需停止服务，可用 pkill mtg 和 pkill -f sync_secrets.sh"
 if [ -n "$1" ]; then
   NODE_ID="$1"
 else
-  read -rp "请输入节点名称（nodeId）[默认node-001]: " NODE_ID
+  read -rp "请输入节点名称（nodeId）[默认node-001]: " NODE_ID < /dev/tty
   NODE_ID=${NODE_ID:-node-001}
 fi
 
 if [ -n "$2" ]; then
   API_URL="$2"
 else
-  read -rp "请输入主控端接口地址（如 https://your-master/api/secrets）: " API_URL
+  read -rp "请输入主控端接口地址（如 https://your-master/api/secrets）: " API_URL < /dev/tty
   API_URL=${API_URL:-https://your-master/api/secrets}
 fi
 
 if [ -n "$3" ]; then
   MTP_PORT="$3"
 else
-  read -rp "请输入监听端口 [默认443]: " MTP_PORT
+  read -rp "请输入监听端口 [默认443]: " MTP_PORT < /dev/tty
   MTP_PORT=${MTP_PORT:-443}
 fi
 
