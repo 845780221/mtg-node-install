@@ -1,3 +1,12 @@
+# 检查端口是否被占用并kill旧进程
+function kill_port_if_exists() {
+  local port=$1
+  pid=$(lsof -i :$port -t 2>/dev/null)
+  if [ -n "$pid" ]; then
+    echo "检测到端口 $port 被占用，尝试杀死进程 $pid..."
+    kill -9 $pid
+  fi
+}
 echo "==============================="
 echo "  mtg 节点一键安装脚本  "
 echo "==============================="
@@ -47,6 +56,8 @@ if [ ! -f mtg ]; then
   chmod +x mtg
 fi
 
+done
+
 # 3. 创建 secrets 同步脚本
 cat > sync_secrets.sh <<EOF
 #!/bin/bash
@@ -57,6 +68,31 @@ while true; do
 done
 EOF
 chmod +x sync_secrets.sh
+
+# 4. 启动前先同步一次密钥并校验
+echo "正在首次同步密钥..."
+curl -s "${API_URL}?adtag=${ADTAG}" | jq -r '.secrets[].secret' > secrets.txt
+if [ ! -s secrets.txt ]; then
+  echo "[错误] 密钥文件secrets.txt未生成或为空，mtg无法启动！请检查API地址和返回内容。"
+  exit 1
+fi
+
+# 5. 检查端口占用并kill
+kill_port_if_exists $MTP_PORT
+
+# 6. 启动 mtg 服务
+nohup ./mtg run --secrets secrets.txt --bind-to 0.0.0.0:${MTP_PORT} > mtg.log 2>&1 &
+sleep 2
+if ! pgrep -f "./mtg run" >/dev/null; then
+  echo "[错误] mtg 启动失败，请检查 mtg.log 日志！"
+  tail -n 30 mtg.log
+  exit 1
+fi
+echo "mtg 已启动，日志见 mtg.log"
+
+# 7. 启动密钥同步脚本
+nohup ./sync_secrets.sh > sync.log 2>&1 &
+echo "密钥同步脚本已启动，日志见 sync.log"
 
 # 4. 启动 mtg 服务
 
