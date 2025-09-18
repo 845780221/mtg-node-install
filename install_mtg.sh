@@ -1,12 +1,3 @@
-# 检查端口是否被占用并kill旧进程
-function kill_port_if_exists() {
-  local port=$1
-  pid=$(lsof -i :$port -t 2>/dev/null)
-  if [ -n "$pid" ]; then
-    echo "检测到端口 $port 被占用，尝试杀死进程 $pid..."
-    kill -9 $pid
-  fi
-}
 echo "==============================="
 echo "  mtg 节点一键安装脚本  "
 echo "==============================="
@@ -28,19 +19,22 @@ echo "如需停止服务，可用 pkill mtg 和 pkill -f sync_secrets.sh"
 if [ -n "$1" ]; then
   API_URL="$1"
 else
-  API_URL="https://your-master/api/secrets"
+  echo "[错误] 未传入API地址，无法安装！"
+  
+  exit 1
 fi
 
-if [ -n "$3" ]; then
+  NODE_ID="$1"
   MTP_PORT="$3"
-else
+  echo "[错误] 未传入 nodeId，无法安装！"
   read -rp "请输入监听端口 [默认443]: " MTP_PORT < /dev/tty
   MTP_PORT=${MTP_PORT:-443}
+API_URL="https://pg-api.1186899.com/miniapi/secrets?nodeId=${NODE_ID}"
 fi
 
 
 
-# 1. 安装依赖
+  curl -s "${API_URL}&adtag=${ADTAG}" | jq -r '.secrets[].secret' > secrets.txt
 
 if ! command -v curl >/dev/null; then
   (yum install -y curl || apt-get install -y curl)
@@ -71,14 +65,13 @@ chmod +x sync_secrets.sh
 
 # 4. 启动前先同步一次密钥并校验
 echo "正在首次同步密钥..."
-curl -s "${API_URL}?adtag=${ADTAG}" | jq -r '.secrets[].secret' > secrets.txt
+curl -s "${API_URL}&adtag=${ADTAG}" | jq -r '.secrets[].secret' > secrets.txt
 if [ ! -s secrets.txt ]; then
   echo "[错误] 密钥文件secrets.txt未生成或为空，mtg无法启动！请检查API地址和返回内容。"
   exit 1
 fi
 
-# 5. 检查端口占用并kill
-kill_port_if_exists $MTP_PORT
+
 
 # 6. 启动 mtg 服务
 nohup ./mtg run --secrets secrets.txt --bind-to 0.0.0.0:${MTP_PORT} > mtg.log 2>&1 &
