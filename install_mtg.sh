@@ -42,7 +42,6 @@ if [ ! -f mtg ]; then
   chmod +x mtg
 fi
 
-done
 # 3. 创建 secrets 同步脚本
 cat > sync_secrets.sh <<EOF
 #!/bin/bash
