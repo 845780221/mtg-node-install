@@ -1,6 +1,3 @@
-# curl -s https://raw.githubusercontent.com/845780221/mtg-node-install/main/install_mtg.sh | bash
-# https://pg-api.1186899.com/miniapi/secrets
-
 echo "==============================="
 echo "  mtg 节点一键安装脚本  "
 echo "==============================="
