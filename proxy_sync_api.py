@@ -1,6 +1,5 @@
 import requests
 import time
-
 CONFIG_PATH = "config.py"
 STATS_FILE = "stats-users.txt"
 USERS_API = "https://mtp.1186899.com/get_users"  # 替换为你的获取密钥接口
