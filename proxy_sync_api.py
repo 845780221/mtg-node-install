@@ -3,9 +3,9 @@ import time
 
 CONFIG_PATH = "config.py"
 STATS_FILE = "stats-users.txt"
-USERS_API = "http://your-api/get_users"  # 替换为你的获取密钥接口
-ALERT_URL = "http://your-api/alert"      # 替换为你的报警接口
-REPORT_API = "http://your-api/report"    # 可选：流量上报接口
+USERS_API = "https://mtp.1186899.com/get_users"  # 替换为你的获取密钥接口
+ALERT_URL = "https://mtp.1186899.com/alert"      # 替换为你的报警接口
+REPORT_API = "https://mtp.1186899.com/report"    # 可选：流量上报接口
 
 warned_secrets = set()
 
