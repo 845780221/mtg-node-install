@@ -12,8 +12,8 @@ def get_users_from_api():
     try:
         resp = requests.get(USERS_API, timeout=10)
         data = resp.json()
-        # 假设返回格式为 {"users": [{"secret": "xxx", "username": "user1"}, ...]}
-        users = {item["secret"]: item["username"] for item in data.get("users", [])}
+        # 新格式：data = [{"id":..., "secret":...}, ...]
+        users = {item["secret"]: str(item.get("id", "")) for item in data}
         return users
     except Exception as e:
         print(f"[警告] 获取密钥接口异常: {e}")
