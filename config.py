@@ -21,7 +21,7 @@ MODES = {
 
 # The domain for TLS mode, bad clients are proxied there
 # Use random existing domain, proxy checks it on start
-# TLS_DOMAIN = "www.google.com"
+TLS_DOMAIN = "www.microsoft.com"
 
 # Tag for advertising, obtainable from @MTProxybot
-# AD_TAG = "3c09c680b76ee91a4c25ad51f742267d"
+AD_TAG = "0b28e29e1ac4d675001d3a50a3ecdede"
